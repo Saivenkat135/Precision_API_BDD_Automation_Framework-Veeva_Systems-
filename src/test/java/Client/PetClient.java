@@ -41,10 +41,4 @@ public class PetClient {
                 .get("/pet/findByStatus");
     }
 
-
-
-
-
-
-
 }
