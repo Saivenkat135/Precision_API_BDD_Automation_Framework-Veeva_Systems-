@@ -37,11 +37,29 @@ public class PetSteps extends BaseTest {
 
 
     @When("I get the pet details")
-    public void getPet() {
-        response = client.getPet(petId);
+    public void getPet() throws InterruptedException {
 
-        System.out.println("GET Response: " + response.asString());
+        int retries = 5;
+        int statusCode = 0;
+
+        while (retries-- > 0) {
+
+            response = given()
+                    .baseUri(baseUrl)
+                    .get("/pet/" + petId);
+
+            statusCode = response.getStatusCode();
+
+            if (statusCode == 200) {
+                break;
+            }
+
+            Thread.sleep(1000); // wait 1 sec
+        }
+
+        System.out.println("Final GET Response: " + response.asString());
     }
+
 
 
     @Then("pet details should match")
@@ -68,7 +86,15 @@ public class PetSteps extends BaseTest {
 
     @Then("pet should be deleted")
     public void validateDelete() {
-        Assert.assertEquals(200, response.getStatusCode());
+
+        response = given()
+                .baseUri(baseUrl)
+                .get("/pet/" + petId);
+
+        System.out.println("Delete Validation Response: " + response.asString());
+
+        // After delete → should NOT exist
+        assertEquals(404, response.getStatusCode());
     }
 
     // --------------------------- Test Case 2 ------------------------------
@@ -269,15 +295,35 @@ public class PetSteps extends BaseTest {
 
 
     @Then("the created pet should exist in sold pet list")
-    public void validatePetInSoldList() {
+    public void validatePetInSoldList() throws InterruptedException {
 
-        boolean isPresent = soldPetIds.stream()
-                .anyMatch(id -> id.equals(petId));
+        boolean isPresent = false;
+        int retries = 5;
+
+        while (retries-- > 0) {
+
+            response = given()
+                    .baseUri(baseUrl)
+                    .queryParam("status", "sold")
+                    .get("/pet/findByStatus");
+
+            List<Long> soldPetIds = response.jsonPath().getList("id", Long.class);
+
+            isPresent = soldPetIds.stream()
+                    .anyMatch(id -> id.equals(petId));
+
+            if (isPresent) {
+                break;
+            }
+
+            Thread.sleep(1500); // wait before retry
+        }
 
         System.out.println("Created Pet ID: " + petId);
         System.out.println("Is Present in Sold List: " + isPresent);
 
-        assertTrue("Pet not found in sold list", isPresent);
+        assertTrue("Pet not found in sold list after retries", isPresent);
     }
+
 
 }
