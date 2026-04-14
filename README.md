@@ -82,7 +82,7 @@ The framework follows a **Behavior Driven Development (BDD)** approach using Cuc
 
 ## 🏗️ Framework Architecture
 
-![Architecture Diagram](diagrams/architecture.png)
+![Architecture Diagram](diagrams/architecture_diagram.png)
 
 ### Key Components:
 
