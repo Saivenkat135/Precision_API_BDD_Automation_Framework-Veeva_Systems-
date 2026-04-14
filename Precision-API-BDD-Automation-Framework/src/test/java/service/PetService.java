@@ -3,7 +3,7 @@ package Client;
 import io.restassured.response.Response;
 import static io.restassured.RestAssured.*;
 
-public class PetClient {
+public class PetService {
     // ------------------Test Case 1 -----------------------
     public Response createPet(String body) {
         return given()
@@ -40,5 +40,4 @@ public class PetClient {
                 .queryParam("status", status)
                 .get("/pet/findByStatus");
     }
-
 }
