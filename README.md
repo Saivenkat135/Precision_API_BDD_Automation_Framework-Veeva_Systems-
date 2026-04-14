@@ -140,6 +140,12 @@ Tests run: 4, Failures: 0, Errors: 0
 - Issue: Long vs Integer mismatch  
 - Solution: Used proper data types  
 
+### 🔸Swagger Petstore API is NOT reliable
+- Faced inconsistent API responses from the Swagger Petstore, causing mismatch in expected vs actual data.
+- Handling dynamic data (IDs) was difficult, leading to failures in sequential API validations.
+- Dealt with data type issues like Long vs Integer, causing runtime exceptions.
+- Managing flaky tests due to API delays and unreliable backend required implementing retry/tolerance logic.
+
 ---
 
 ## 🎯 Conclusion
